@@ -31,10 +31,9 @@ int showMenu(){
 
         GetInputInt("", &userSelection);
 
-        if(userSelection != 1 ||userSelection != 2 || userSelection != 3 || userSelection != 4 || userSelection != 9)
+        if(userSelection != 1 && userSelection != 2 && userSelection != 3 && userSelection != 4 && userSelection != 9)
             puts("Invalid choice. Try again ");
         else 
             return userSelection;  
         }
-
 }

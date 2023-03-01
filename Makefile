@@ -1,8 +1,8 @@
-PROG=lab28-2
+PROG=inlamning2
 CC=gcc
 CFLAGS=-g -Wall
-DEPS = safeinput.h
-OBJ = menu.o main.o safeinput.o circumference.o fileList.o longestWord.o
+DEPS = safeinput.h 
+OBJ = menu.o Main.o safeinput.o
 
 all: $(PROG) 
 

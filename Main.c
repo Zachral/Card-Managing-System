@@ -32,7 +32,6 @@ void main(){
         default: 
             puts("Invalid input, try again"); 
             break; 
-
         }
     }
 
