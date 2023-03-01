@@ -1,1 +1,6 @@
 inlamning2
+Main.o
+safeinput.o
+doorControl.o
+.gitignore
+inlamning2

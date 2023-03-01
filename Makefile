@@ -2,7 +2,7 @@ PROG=inlamning2
 CC=gcc
 CFLAGS=-g -Wall
 DEPS = safeinput.h 
-OBJ = menu.o Main.o safeinput.o
+OBJ = menu.o Main.o safeinput.o doorControl.o
 
 all: $(PROG) 
 

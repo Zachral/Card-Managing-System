@@ -8,6 +8,7 @@ Menu goes here
 #include <stdio.h>
 #include <stdbool.h>
 #include "menu.h"
+#include "doorControl.h"
 
 void main(){
     while(true){
@@ -15,7 +16,7 @@ void main(){
 
         switch(menuSelection){
         case 1: 
-            //remoteOpenDoor();
+            remoteOpenDoor();
             break; 
         case 2:
             //cardsInSystem();

@@ -5,5 +5,8 @@
             "binaryPath": "/home/daniel/Code/YA/SV23TR B Strukturerad programmering C/inlamning2/inlamning2",
             "binaryArgs": []
         }
-    ]
+    ],
+    "files.associations": {
+        "time.h": "c"
+    }
 }
