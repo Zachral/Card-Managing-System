@@ -1,14 +1,48 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+struct dates
+{
+    /* read up on nested structs https://www.programiz.com/c-programming/c-structures */
+};
+
+
+typedef struct cards{
+    int cardNumber; 
+    struct dates dateOfRegistation;
+    bool access; 
+} card; 
+
+int cardsInSystem(){
+    int ch; 
+    FILE* file; 
+    file = fopen("listOfRegisterdCards.dat", "w"); 
+    if (file == NULL) {
+            printf("Something went wrong when opening the file");
+            fclose(file);
+            return 0;
+    }
+
+    
+    if ((ch = fgetc(file)) == EOF){
+        printf("\nThere are no registerd cards in the system.");
+        return 0; 
+    }
+
+
 /*
-cardsInSystem
 
-open file with cards
+    If list is empty
+        print that
 
-list all cards one by one
-print if they have access and date enterd to system
+        list all cards one by one
+        print if they have access and date enterd to system
 
-close file
+ */
+   fclose(file); 
+return 0;
+}
 
-*/
 
 /*
 manageAccess

@@ -4,3 +4,5 @@ safeinput.o
 doorControl.o
 .gitignore
 inlamning2
+cardManaging.o
+.gitignore

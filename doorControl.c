@@ -3,8 +3,6 @@
 #include <unistd.h> // Makes sleep() avalible in linux
 /*#include <Windows.h> Needs to be uncommented to use sleep() on a Windows device*/
 
-
-
 void remoteOpenDoor(){
     puts("CURRENTLY LAMP IS: Green"); 
     sleep(3);

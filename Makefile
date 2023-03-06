@@ -1,8 +1,8 @@
 PROG=inlamning2
 CC=gcc
-CFLAGS=-g -Wall
+CFLAGS=-g -Wall -Werror
 DEPS = safeinput.h 
-OBJ = menu.o Main.o safeinput.o doorControl.o
+OBJ = menu.o Main.o safeinput.o doorControl.o cardManaging.o
 
 all: $(PROG) 
 

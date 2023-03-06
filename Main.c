@@ -9,8 +9,9 @@ Menu goes here
 #include <stdbool.h>
 #include "menu.h"
 #include "doorControl.h"
+#include "cardManaging.h"
 
-void main(){
+int main(){
     while(true){
         int menuSelection = showMenu(); 
 
@@ -19,7 +20,7 @@ void main(){
             remoteOpenDoor();
             break; 
         case 2:
-            //cardsInSystem();
+            cardsInSystem();
             break; 
         case 3: 
             //manageAccess(); 
@@ -36,5 +37,5 @@ void main(){
         }
     }
 
-
+return 0; 
 }
