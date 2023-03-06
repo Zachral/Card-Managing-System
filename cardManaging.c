@@ -1,44 +1,36 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-struct dates
-{
-    /* read up on nested structs https://www.programiz.com/c-programming/c-structures */
-};
-
-
-typedef struct cards{
+struct cards {
     int cardNumber; 
-    struct dates dateOfRegistation;
+    char dateOfRegistration[26]; 
     bool access; 
-} card; 
+}; 
+
+//Rewrite this to become an array with  dynamic memory allocation. 
+struct  cards card[20]; 
+// IMPORTANT!!
+
 
 int cardsInSystem(){
     int ch; 
     FILE* file; 
     file = fopen("listOfRegisterdCards.dat", "w"); 
     if (file == NULL) {
-            printf("Something went wrong when opening the file");
+            printf("Something went wrong array with when opening the file");
             fclose(file);
             return 0;
     }
-
-    
     if ((ch = fgetc(file)) == EOF){
         printf("\nThere are no registerd cards in the system.");
         return 0; 
+    } else {
+        for(int i = 0; i < sizeof(struct cards); i++){
+            if(card[i].access)
+                printf("Cardnumber: %d, Registerd on: %s\n Access", card[i].cardNumber, card[i].dateOfRegistration);
+            printf("Cardnumber: %d, Registerd on: %s\nNo access", card[i].cardNumber, card[i].dateOfRegistration);
+        }
     }
-
-
-/*
-
-    If list is empty
-        print that
-
-        list all cards one by one
-        print if they have access and date enterd to system
-
- */
    fclose(file); 
 return 0;
 }
