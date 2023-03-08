@@ -1,15 +1,18 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
 #include "cardManaging.h"
-
+#include "safeinput.h"
 
 
 int cardsInSystem(const CardsList *cardList){
     int ch; 
     FILE* file; 
-    file = fopen("listOfRegisterdCards.dat", "r"); 
+    file = fopen("listOfRegisterdCards.dat", "rb"); 
     if (file == NULL) {
-            printf("Something went wrong array with when opening the file");
+            printf("Something went wrong when opening the file");
             fclose(file);
             return 0;
     }
@@ -75,6 +78,64 @@ print the enterd details and ask if they are correct
 
     close file
 */
+int addCardToFile(CardsList *cardList, int tempCardNum, bool tempAccess){
+    char currentDate[26];
+    time_t timer;
+    struct tm* date_info;  
+    timer = time(NULL);
+    date_info = localtime(&timer);  
+    strftime(currentDate,26, "%Y-%m-%d", date_info);
+
+    FILE* file; 
+    file = fopen("listOfRegisterdCards.dat", "ab"); 
+    if (file == NULL) {
+            printf("Something went wrong when opening the file");
+            fclose(file);
+            return 1;
+    }
+    cardList->numOfCards++;
+  
+    if(cardList -> numOfCards == 1)
+        cardList -> cards = (Card *)malloc(1 * sizeof(Card)); 
+    else 
+        cardList -> cards = (Card *)realloc(cardList -> cards, cardList ->numOfCards * sizeof(Card)); 
+
+    cardList->cards->cardNumber = tempCardNum; 
+    cardList ->cards->access = tempAccess; 
+    strcpy(cardList ->cards ->dateOfRegistration, currentDate); 
+
+    fwrite(&cardList->cards, sizeof(Card), 1, file); 
+    free(cardList->cards);
+    fclose(file);
+
+return 0; 
+}
+
+int inputCardDetails(CardsList *cardList){
+    int tempCardNum;
+    int userChoice; 
+    bool tempAccess = true;  
+    
+    while(true){
+        GetInputInt("Input card details:\nCard number: ", &tempCardNum); 
+        GetInputInt("\nWill the card have access?\n1.Yes\n2.No",&userChoice);
+        if(userChoice == 2)
+            tempAccess = false; 
+
+        if(tempAccess)
+            printf("Cardnumber: %d, has access\n", tempCardNum);
+        else
+            printf("Cardnumber: %d, does not have access\n", tempCardNum); 
+
+        GetInputInt("Is the information entered correct?\n1.Yes\n2.No", &userChoice);
+        if (userChoice == 1){
+            addCardToFile(cardList,tempCardNum,tempAccess);
+            printf("Card succesfully saved.\n");
+            break; 
+        }
+    }
+return 0; 
+}
 
 
 

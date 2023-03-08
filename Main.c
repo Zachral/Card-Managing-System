@@ -25,6 +25,7 @@ int main(){
             break; 
         case 3: 
             //manageAccess(); 
+            inputCardDetails(&cardList);
             break;
         case 4: 
             return false; 

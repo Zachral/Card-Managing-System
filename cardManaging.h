@@ -3,7 +3,7 @@
 
 int cardsInSystem(); 
 void manageAcess(); 
-void addCard(); 
+int inputCardDetails(); 
 void testAcess(); 
 
 typedef struct{
