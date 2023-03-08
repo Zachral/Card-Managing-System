@@ -1,21 +1,13 @@
 #include <stdio.h>
 #include <stdbool.h>
-
-struct cards {
-    int cardNumber; 
-    char dateOfRegistration[26]; 
-    bool access; 
-}; 
-
-//Rewrite this to become an array with  dynamic memory allocation. 
-struct  cards card[20]; 
-// IMPORTANT!!
+#include "cardManaging.h"
 
 
-int cardsInSystem(){
+
+int cardsInSystem(const CardsList *cardList){
     int ch; 
     FILE* file; 
-    file = fopen("listOfRegisterdCards.dat", "w"); 
+    file = fopen("listOfRegisterdCards.dat", "r"); 
     if (file == NULL) {
             printf("Something went wrong array with when opening the file");
             fclose(file);
@@ -23,12 +15,14 @@ int cardsInSystem(){
     }
     if ((ch = fgetc(file)) == EOF){
         printf("\nThere are no registerd cards in the system.");
+        fclose(file); 
         return 0; 
     } else {
-        for(int i = 0; i < sizeof(struct cards); i++){
-            if(card[i].access)
-                printf("Cardnumber: %d, Registerd on: %s\n Access", card[i].cardNumber, card[i].dateOfRegistration);
-            printf("Cardnumber: %d, Registerd on: %s\nNo access", card[i].cardNumber, card[i].dateOfRegistration);
+        printf("All cards in system:\n"); 
+        for(int i = 0; i < cardList ->numOfCards; i++){
+            if(cardList->cards[i].access)
+                printf("Cardnumber: %d, Registerd on: %s\n Access", cardList -> cards[i].cardNumber, cardList -> cards[i].dateOfRegistration);
+            printf("Cardnumber: %d, Registerd on: %s\nNo access", cardList -> cards[i].cardNumber, cardList -> cards[i].dateOfRegistration);
         }
     }
    fclose(file); 

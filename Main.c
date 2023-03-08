@@ -12,6 +12,7 @@ Menu goes here
 #include "cardManaging.h"
 
 int main(){
+    CardsList cardList = {NULL, 0}; 
     while(true){
         int menuSelection = showMenu(); 
 
@@ -20,7 +21,7 @@ int main(){
             remoteOpenDoor();
             break; 
         case 2:
-            cardsInSystem();
+            cardsInSystem(&cardList);
             break; 
         case 3: 
             //manageAccess(); 
