@@ -17,21 +17,13 @@ int cardsInSystem(CardsList *cardList){
             fclose(file);
             return 0;
     }
+
     if ((ch = fgetc(file)) == EOF){
         printf("\nThere are no registerd cards in the system.");
         fclose(file); 
         return 0; 
-        
-    }/* else {
-        printf("All cards in system:\n"); 
-        for(int i = 0; i < sizeof(Card); i++){
-            fread(&cardList->cards, sizeof(Card), 1, file); 
-            if(&cardList->cards[i].access)
-                printf("Cardnumber: %d, Registerd on: %s\n Access\n", cardList -> cards[i].cardNumber, cardList -> cards[i].dateOfRegistration);
-            else
-                printf("Cardnumber: %d, Registerd on: %s\nNo access", cardList -> cards[i].cardNumber, cardList -> cards[i].dateOfRegistration);
-        }
-    }*/
+    }
+
     fseek(file, sizeof(Card[0]), SEEK_SET);
     printf("\nCards registerd in system:");
     while (!feof(file)){
@@ -39,14 +31,17 @@ int cardsInSystem(CardsList *cardList){
             cardList -> cards = (Card *)malloc(1 * sizeof(Card)); 
         else 
             cardList -> cards = (Card *)realloc(cardList -> cards, (counter + 1)  * sizeof(Card)); 
-        
-
-        if (cardList->cards[counter].access)
-            printf("\nCardnumber: %d, \nRegistered on: %s\nAccess\n", cardList->cards[counter].cardNumber, cardList->cards[counter].dateOfRegistration);
-        else 
-            printf("\nCardnumber: %d, \nRegistered on: %s\nNo access\n", cardList->cards[counter].cardNumber, cardList->cards[counter].dateOfRegistration);
+        fread(&cardList->cards[counter], sizeof(cardList->cards[0]), 1, file);
         counter++;
-}   
+    }   
+
+    for(int i = 0; i < counter - 1; i++){
+        if (cardList->cards[i].access)
+            printf("\nCardnumber: %d, \nRegistered on: %s\nAccess\n", cardList->cards[i].cardNumber, cardList->cards[i].dateOfRegistration);
+        else 
+            printf("\nCardnumber: %d, \nRegistered on: %s\nNo access\n", cardList->cards[i].cardNumber, cardList->cards[i].dateOfRegistration);
+
+    }
 
    fclose(file); 
 return 0;
@@ -78,26 +73,6 @@ close file
 */
 
 
-/*
-addCard
-
-open file with cards in apprehend mode
-
-promt user to input carddetails
-    card number
-    acces status
-    (date will be added automaticly)
-
-print the enterd details and ask if they are correct
-    if yes
-        print list to file
-        sort by cardnumber order
-        close file
-    else 
-        ask user to input details again. 
-
-    close file
-*/
 void addCardToFile(CardsList *cardList, int tempCardNum, bool tempAccess){
     char currentDate[26];
     time_t timer;
@@ -126,8 +101,7 @@ void addCardToFile(CardsList *cardList, int tempCardNum, bool tempAccess){
 
     fwrite(&cardList->cards[cardList->numOfCards -1], sizeof(Card), 1, file); 
     fclose(file);
-    //free(cardList->cards);
-
+return;
 }
 
 int inputCardDetails(CardsList *cardList){
