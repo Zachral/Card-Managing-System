@@ -10,7 +10,7 @@ typedef struct{
     int cardNumber; 
     char dateOfRegistration[26]; 
     bool access; 
-}Card ; 
+}Card;
 
 typedef struct{
     Card *cards; 
