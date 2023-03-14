@@ -24,14 +24,16 @@ int main(){
             cardsInSystem(&cardList);
             break; 
         case 3: 
-            //manageAccess(); 
-            inputCardDetails(&cardList);
+            manageAccess(&cardList); 
             break;
         case 4: 
             return false; 
             break; 
+        case 5: 
+            inputCardDetails(&cardList); 
+            break; 
         case 9:
-            //testAccess();
+            testAccess(&cardList);
             break; 
         default: 
             puts("Invalid input, try again"); 

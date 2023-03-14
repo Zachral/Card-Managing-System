@@ -2,9 +2,9 @@
 #define _CARDMANAGING_
 
 int cardsInSystem(); 
-void manageAcess(); 
+int manageAccess(); 
 int inputCardDetails(); 
-void testAcess(); 
+void testAccess(); 
 
 typedef struct{
     int cardNumber; 
@@ -16,5 +16,7 @@ typedef struct{
     Card *cards; 
     int numOfCards; 
 } CardsList; 
+
+FILE* file; 
 
 #endif
