@@ -1,40 +1,36 @@
-/*
-
-
-Menu goes here
-
-
-*/
 #include <stdio.h>
 #include <stdbool.h>
 #include "menu.h"
 #include "doorControl.h"
+#include "cardManaging.h"
 
-void main(){
+int main(){
+    CardsList cardList = {NULL, 0}; 
     while(true){
         int menuSelection = showMenu(); 
-
         switch(menuSelection){
         case 1: 
             remoteOpenDoor();
             break; 
         case 2:
-            //cardsInSystem();
+            cardsInSystem(&cardList);
             break; 
         case 3: 
-            //manageAccess(); 
+            manageAccess(&cardList); 
             break;
         case 4: 
             return false; 
             break; 
+        case 5: 
+            inputCardDetails(&cardList); // "Hidden" option to be able to directly add card to file.
+            break; 
         case 9:
-            //testAccess();
+            testAccess(&cardList);
             break; 
         default: 
             puts("Invalid input, try again"); 
             break; 
         }
     }
-
-
+return 0; 
 }
