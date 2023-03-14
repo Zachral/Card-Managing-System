@@ -1,10 +1,3 @@
-/*
-
-
-Menu goes here
-
-
-*/
 #include <stdio.h>
 #include <stdbool.h>
 #include "menu.h"
@@ -15,7 +8,6 @@ int main(){
     CardsList cardList = {NULL, 0}; 
     while(true){
         int menuSelection = showMenu(); 
-
         switch(menuSelection){
         case 1: 
             remoteOpenDoor();
@@ -30,7 +22,7 @@ int main(){
             return false; 
             break; 
         case 5: 
-            inputCardDetails(&cardList); 
+            inputCardDetails(&cardList); // "Hidden" option to be able to directly add card to file.
             break; 
         case 9:
             testAccess(&cardList);
@@ -40,6 +32,5 @@ int main(){
             break; 
         }
     }
-
 return 0; 
 }

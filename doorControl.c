@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <time.h>
 #include <unistd.h> // Makes sleep() avalible in linux
 /*#include <Windows.h> Needs to be uncommented to use sleep() on a Windows device*/
 
