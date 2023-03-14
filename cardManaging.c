@@ -92,9 +92,28 @@ int inputCardDetails(CardsList *cardList){
     bool tempAccess = true;  
     
     while(true){
-        printf("\nInput card Details:\nCardnumber: ");
+        printf("\nInput card details:\nCard number: ");
         if(scanf(" %d", &tempCardNum)){
-            //Need to make a function here to check if the card is already registerd. 
+            while(true){
+                for(int i = 0;i < readCardList(cardList) - 1; i++){
+                    if(tempCardNum == cardList->cards[i].cardNumber){
+                        printf("A card with card number %d is already registerd in the system.\nEnter a different number.\n", tempCardNum);
+                        i = 0; 
+                        empty_stdin(); 
+                        while(true){
+                            printf("\nCard number: ");
+                            if(scanf(" %d", &tempCardNum)){
+                                break;
+                            } else {
+                                printf("\nInput must be a number.");
+                                empty_stdin(); 
+                            }
+                        }
+                    }
+                }
+                fclose(file); 
+                break; 
+            }
             while(true){
                 printf("\nWill the card have access?\n1.Yes\n2.No\n");
                 scanf(" %d",&accessChoice);
@@ -130,7 +149,7 @@ int inputCardDetails(CardsList *cardList){
             if(confirmInformation == 1){
                 addCardToFile(cardList,tempCardNum,tempAccess);
                 printf("Card succesfully saved.\n");
-                break; 
+                return 0; 
             }
         }else{
             printf("\nInput must be a number.");
@@ -174,6 +193,7 @@ int manageAccess(CardsList *cardList){
             empty_stdin(); 
             printf("\nThere is no card registerd in the system with cardnumber: %d\n", cardNum);
             while (true){
+                userChoice = 0;
                 printf("\nDo you want to:\n1.Add a new card.\n2.Input a differnt cardnumber\n3.Exit to menu\n");
                 scanf(" %d", &userChoice);
                 if(userChoice != 1 && userChoice != 2 && userChoice != 3){
@@ -183,11 +203,13 @@ int manageAccess(CardsList *cardList){
                     if(userChoice == 1){
                         empty_stdin();
                         inputCardDetails(cardList);
-                        break; 
+                        return 0; 
                     }else if (userChoice == 2)
                         break; 
-                    else 
+                    else{
+                        empty_stdin();
                         return 0; 
+                    }
                 }
             }
         }else{
