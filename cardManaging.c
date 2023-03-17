@@ -35,6 +35,7 @@ int readCardList(CardsList *cardList){
         fread(&cardList->cards[counter], sizeof(cardList->cards[0]), 1, file);
         counter++;
     }  
+    cardList->numOfCards = counter; 
     fclose(file); 
 return counter;
 }
@@ -172,8 +173,7 @@ int manageAccess(CardsList *cardList){
                     printCardDetails(cardList, i); 
                     empty_stdin(); 
                     while(true){
-                       /* printf*/GetInputInt("\nDo you want to change the access status?\n1.Yes\n2.No\n", &changeAcess); 
-                         //scanf(" %d", &changeAcess); 
+                        GetInputInt("\nDo you want to change the access status?\n1.Yes\n2.No\n", &changeAcess);   
                         if(changeAcess != 1 && changeAcess != 2){
                             printf("Invalid input.");
                             empty_stdin(); 
@@ -185,8 +185,7 @@ int manageAccess(CardsList *cardList){
                         printf("\nUpdated details:");
                         printCardDetails(cardList, i); 
                         file = fopen("listOfRegisterdCards.dat", "wb"); 
-                        fwrite(cardList->cards, sizeof(Card), cardList->numOfCards, file); 
-                        fflush(file); 
+                        fwrite(cardList->cards, sizeof(Card), cardList->numOfCards -1, file); 
                         fclose(file);
                         printf("Press any key to continue"); 
                         empty_stdin(); 
