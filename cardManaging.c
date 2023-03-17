@@ -11,11 +11,11 @@
 #include "menu.h"
 #include "empty_stdin.h"
 
-
+//Reads the cards from binary file to struct.
 int readCardList(CardsList *cardList){
     int ch; 
     int counter = 0;
-    file = fopen("listOfRegisterdCards.dat", "rb+"); 
+    file = fopen("listOfRegisterdCards.dat", "rb"); 
     if (file == NULL) {
             printf("Something went wrong when opening the file");
             return 0;
@@ -34,35 +34,37 @@ int readCardList(CardsList *cardList){
             cardList -> cards = (Card *)realloc(cardList -> cards, (counter + 1)  * sizeof(Card)); 
         fread(&cardList->cards[counter], sizeof(cardList->cards[0]), 1, file);
         counter++;
-    }   
+    }  
+    fclose(file); 
 return counter;
 }
 
+//prints card details to console
 void printCardDetails(CardsList * cardList, int i){
     if (cardList->cards[i].access)
         printf("\nCardnumber: %d, \nRegistered on: %s\nAccess\n", cardList->cards[i].cardNumber, cardList->cards[i].dateOfRegistration);
     else 
         printf("\nCardnumber: %d, \nRegistered on: %s\nNo access\n", cardList->cards[i].cardNumber, cardList->cards[i].dateOfRegistration); 
 }
-
+//Goes through all registerd cards in system.
 int cardsInSystem(CardsList *cardList){ 
     printf("\nCards registerd in system:");
     for(int i = 0; i < readCardList(cardList) - 1; i++){
         printCardDetails(cardList, i); 
     }
-    fclose(file); 
+   
 return 0;
 }
 
+//Appends a new card to binary file
 void addCardToFile(CardsList *cardList, int tempCardNum, bool tempAccess){
     char currentDate[26];
     time_t timer;
-    struct tm* date_info;  
+    struct tm* date_info ={0}; 
     timer = time(NULL);
     date_info = localtime(&timer);  
     strftime(currentDate,26, "%Y-%m-%d", date_info);
 
-    FILE* file; 
     file = fopen("listOfRegisterdCards.dat", "ab"); 
     if (file == NULL) {
             printf("Something went wrong when opening the file");
@@ -81,10 +83,11 @@ void addCardToFile(CardsList *cardList, int tempCardNum, bool tempAccess){
     strcpy(cardList ->cards[cardList->numOfCards -1].dateOfRegistration, currentDate); 
 
     fwrite(&cardList->cards[cardList ->numOfCards -1], sizeof(Card), 1, file); 
+    free(cardList->cards); 
     fclose(file);
 return;
 }
-
+//Lets the user input card details to be printed to file.
 int inputCardDetails(CardsList *cardList){
     int tempCardNum;
     int accessChoice;
@@ -111,7 +114,6 @@ int inputCardDetails(CardsList *cardList){
                         }
                     }
                 }
-                fclose(file); 
                 break; 
             }
             while(true){
@@ -159,19 +161,21 @@ int inputCardDetails(CardsList *cardList){
 return 0; 
 }
 
+//Lets the user change the access satus of a card
 int manageAccess(CardsList *cardList){
     int cardNum, changeAcess, userChoice; 
     while(true){
         printf("Input cardnumber: ");
         if(scanf(" %d", &cardNum)){
-            for(int i = 0;i < readCardList(cardList) - 1; i++){
+            for(int i = 0;i < readCardList(cardList); i++){
                 if(cardNum == cardList->cards[i].cardNumber){
                     printCardDetails(cardList, i); 
+                    empty_stdin(); 
                     while(true){
-                        printf("\nDo you want to change the access status?\n1.Yes\n2.No\n"); 
-                        scanf(" %d", &changeAcess); 
+                       /* printf*/GetInputInt("\nDo you want to change the access status?\n1.Yes\n2.No\n", &changeAcess); 
+                         //scanf(" %d", &changeAcess); 
                         if(changeAcess != 1 && changeAcess != 2){
-                            printf("Invalid input. Must be 1 or 2.");
+                            printf("Invalid input.");
                             empty_stdin(); 
                         }else 
                             break; 
@@ -180,11 +184,15 @@ int manageAccess(CardsList *cardList){
                         cardList->cards[i].access = !cardList->cards[i].access; 
                         printf("\nUpdated details:");
                         printCardDetails(cardList, i); 
-                        fwrite(&cardList->cards[i], sizeof(Card), 1, file); // Fix writing to file
+                        file = fopen("listOfRegisterdCards.dat", "wb"); 
+                        fwrite(cardList->cards, sizeof(Card), cardList->numOfCards, file); 
+                        fflush(file); 
                         fclose(file);
+                        printf("Press any key to continue"); 
                         empty_stdin(); 
                         return 0;
                     }else{
+                        empty_stdin(); 
                         fclose(file); 
                         return 0;  
                     }
@@ -220,6 +228,7 @@ int manageAccess(CardsList *cardList){
 return 0;
 }
 
+//Lets user test the access status of a card
 void testAccess(CardsList *cardList){
     int cardNumTest; 
     int userChoice;
@@ -235,13 +244,11 @@ void testAccess(CardsList *cardList){
                         puts("CURRENTLY LAMP IS: Green"); 
                         sleep(3);
                         puts("CURRENTLY LAMP IS: Off");
-                        fclose(file);
                         return;
                     } else {
                         puts("CURRENTLY LAMP IS: Red"); 
                         sleep(3);
                         puts("CURRENTLY LAMP IS: Off");
-                        fclose(file);
                         return;
                     }
                 }   
@@ -257,8 +264,7 @@ void testAccess(CardsList *cardList){
                     empty_stdin();
                     if(userChoice == 1)
                         break;
-                    else if(userChoice == 2){
-                        fclose(file);   
+                    else if(userChoice == 2){  
                         return; 
                     }
                 }
