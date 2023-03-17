@@ -11,3 +11,9 @@ empty_stdin.o
 inlamning2
 menu.o
 inlamning2
+arrayCopy.c
+arrayCopy.h
+arrayCopy.o
+.vscode/launch.json
+.vscode/tasks.json
+inlamning2
