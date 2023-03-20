@@ -58,10 +58,10 @@ int cardsInSystem(CardsList *cardList){
 return 0;
 }
 
-bool cardExists(CardsList *cardList, int cardNum){
+ bool hasAccess(CardsList *cardList, int cardNum){
     readCardList(cardList); 
     for(int i = 0;i < cardList->numOfCards ; i++){
-        if(cardNum == cardList->cards[i].cardNumber)
+        if(cardNum == cardList->cards[i].cardNumber && cardList->cards[i].access)
             return true; 
     }
     return false; 
@@ -249,21 +249,16 @@ void testAccess(CardsList *cardList){
         printf("Input cardnumber to test access: ");
         if(scanf(" %d", &cardNumTest)){
             empty_stdin();
-            readCardList(cardList);
-            for(int i = 0; i <cardList->numOfCards; i++){
-                if(cardList->cards[i].cardNumber == cardNumTest){
-                    if(cardList->cards[i].access){
-                        puts("CURRENTLY LAMP IS: Green"); 
-                        sleep(3);
-                        puts("CURRENTLY LAMP IS: Off");
-                        return;
-                    } else {
-                        puts("CURRENTLY LAMP IS: Red"); 
-                        sleep(3);
-                        puts("CURRENTLY LAMP IS: Off");
-                        return;
-                    }
-                }   
+            if(hasAccess(cardList, cardNumTest)){
+                puts("CURRENTLY LAMP IS: Green"); 
+                sleep(3);
+                puts("CURRENTLY LAMP IS: Off");
+                return;
+            } else {
+                puts("CURRENTLY LAMP IS: Red"); 
+                sleep(3);
+                puts("CURRENTLY LAMP IS: Off");
+                return;
             }
             printf("\nCard number %d is not registerd in the system.\n", cardNumTest); 
             while(true){
