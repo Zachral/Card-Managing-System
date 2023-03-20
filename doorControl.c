@@ -7,7 +7,7 @@ void remoteOpenDoor(){
     sleep(3);
     puts("CURRENTLY LAMP IS: Off");
     sleep(1);
-    
+return;  
 }
 
 
