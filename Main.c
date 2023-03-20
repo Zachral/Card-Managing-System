@@ -3,6 +3,7 @@
 #include "menu.h"
 #include "doorControl.h"
 #include "cardManaging.h"
+#include "structs.h"
 
 int main(){
     CardsList cardList = {NULL, 0}; 

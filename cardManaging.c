@@ -6,7 +6,7 @@
 #include <string.h>
 #include <unistd.h> // Makes sleep() avalible in linux
 /*#include <Windows.h> Needs to be uncommented to use sleep() on a Windows device*/
-#include "cardManaging.h"
+#include "structs.h"
 #include "safeinput.h"
 #include "menu.h"
 #include "empty_stdin.h"
@@ -47,7 +47,8 @@ void printCardDetails(CardsList * cardList, int i){
     else 
         printf("\nCardnumber: %d, \nRegistered on: %s\nNo access\n", cardList->cards[i].cardNumber, cardList->cards[i].dateOfRegistration); 
 }
-//Goes through all registerd cards in system.
+
+//Goes through all registerd cards in system and prints them to consol. 
 int cardsInSystem(CardsList *cardList){ 
     printf("\nCards registerd in system:");
     readCardList(cardList);
@@ -58,14 +59,62 @@ int cardsInSystem(CardsList *cardList){
 return 0;
 }
 
- bool hasAccess(CardsList *cardList, int cardNum){
+//Returns the position in the array of the entered card
+int cardPosition(CardsList *cardList, int cardNum){
     readCardList(cardList); 
     for(int i = 0;i < cardList->numOfCards ; i++){
-        if(cardNum == cardList->cards[i].cardNumber && cardList->cards[i].access)
-            return true; 
+        if(cardNum == cardList->cards[i].cardNumber)
+            return i; 
+    }
+return 0; 
+}
+
+//Checks if the card enterd is registerd in the system
+bool isInSystem(CardsList *cardList, int cardNum){
+    readCardList(cardList); 
+    for(int i = 0;i < cardList->numOfCards ; i++){
+        if(cardNum == cardList->cards[i].cardNumber)
+            return true;  
     }
     return false; 
 }   
+//Checks if card has access or not
+bool hasAccess(CardsList *cardList, int cardNum){
+    readCardList(cardList); 
+    for(int i = 0;i < cardList->numOfCards ; i++){
+        if(cardNum == cardList->cards[i].cardNumber && cardList->cards[i].access)
+            return true;  
+    }
+    return false; 
+}   
+//Changes the access status of the enterd card and prints it to binary file
+void changeAccessStatus(CardsList *cardList, int position){
+    int changeAccess;
+    printCardDetails(cardList, position);              
+    while(true){
+        GetInputInt("\nDo you want to change the access status?\n1.Yes\n2.No\n", &changeAccess);   
+        if(changeAccess != 1 && changeAccess != 2){
+            printf("Invalid input.");
+            empty_stdin(); 
+        }else 
+            break; 
+    }
+    if (changeAccess == 1){
+        cardList->cards[position].access = !cardList->cards[position].access; 
+        printf("\nUpdated details:");
+        printCardDetails(cardList, position); 
+        file = fopen("listOfRegisterdCards.dat", "wb"); 
+        fwrite(cardList->cards, sizeof(Card), cardList->numOfCards -1, file); 
+        fclose(file);
+        printf("Press any key to continue"); 
+        empty_stdin(); 
+        return;
+    }else{
+        printf("Press any key to continue"); 
+        empty_stdin(); 
+        return ;  
+    }
+}
 
 //Appends a new card to binary file
 void addCardToFile(CardsList *cardList, int tempCardNum, bool tempAccess){
@@ -98,6 +147,7 @@ void addCardToFile(CardsList *cardList, int tempCardNum, bool tempAccess){
     fclose(file);
 return;
 }
+
 //Lets the user input card details to be printed to file.
 int inputCardDetails(CardsList *cardList){
     int tempCardNum;
@@ -109,24 +159,20 @@ int inputCardDetails(CardsList *cardList){
         printf("\nInput card details:\nCard number: ");
         if(scanf(" %d", &tempCardNum)){
             while(true){
-                readCardList(cardList); 
-                for(int i = 0;i < cardList->numOfCards ; i++){
-                    if(tempCardNum == cardList->cards[i].cardNumber){
-                        printf("A card with card number %d is already registerd in the system.\nEnter a different number.\n", tempCardNum);
-                        i = 0; 
-                        empty_stdin(); 
-                        while(true){
-                            printf("\nCard number: ");
-                            if(scanf(" %d", &tempCardNum)){
-                                break;
-                            } else {
-                                printf("\nInput must be a number.");
-                                empty_stdin(); 
-                            }
+                if(isInSystem(cardList, tempCardNum)){
+                    printf("A card with card number %d is already registerd in the system.\nEnter a different number.\n", tempCardNum); 
+                    empty_stdin(); 
+                    while(true){
+                        printf("\nCard number: ");
+                        if(scanf(" %d", &tempCardNum)){
+                            break;
+                        } else {
+                            printf("\nInput must be a number.");
+                            empty_stdin(); 
                         }
                     }
-                }
-                break; 
+                }else
+                    break; 
             }
             while(true){
                 printf("\nWill the card have access?\n1.Yes\n2.No\n");
@@ -173,43 +219,18 @@ int inputCardDetails(CardsList *cardList){
 return 0; 
 }
 
-//Lets the user change the access satus of a card
+//Lets the user enter a number to be able to change the access satus of a card
 int manageAccess(CardsList *cardList){
-    int cardNum, changeAcess, userChoice; 
+    int cardNum,userChoice, position; 
     while(true){
         printf("Input cardnumber: ");
         if(scanf(" %d", &cardNum)){
-            readCardList(cardList);
-            for(int i = 0;i < cardList->numOfCards; i++){
-                if(cardNum == cardList->cards[i].cardNumber){
-                    printCardDetails(cardList, i); 
-                    empty_stdin(); 
-                    while(true){
-                        GetInputInt("\nDo you want to change the access status?\n1.Yes\n2.No\n", &changeAcess);   
-                        if(changeAcess != 1 && changeAcess != 2){
-                            printf("Invalid input.");
-                            empty_stdin(); 
-                        }else 
-                            break; 
-                    }
-                    if (changeAcess == 1){
-                        cardList->cards[i].access = !cardList->cards[i].access; 
-                        printf("\nUpdated details:");
-                        printCardDetails(cardList, i); 
-                        file = fopen("listOfRegisterdCards.dat", "wb"); 
-                        fwrite(cardList->cards, sizeof(Card), cardList->numOfCards -1, file); 
-                        fclose(file);
-                        printf("Press any key to continue"); 
-                        empty_stdin(); 
-                        return 0;
-                    }else{
-                        printf("Press any key to continue"); 
-                        empty_stdin(); 
-                        return 0;  
-                    }
-                }
+            empty_stdin();
+            if(isInSystem(cardList, cardNum)){
+                position = cardPosition(cardList, cardNum); 
+                changeAccessStatus(cardList, position);
+                return 0; 
             }
-            empty_stdin(); 
             printf("\nThere is no card registerd in the system with cardnumber: %d\n", cardNum);
             while (true){
                 userChoice = 0;
@@ -245,25 +266,27 @@ void testAccess(CardsList *cardList){
     int userChoice;
     puts("CURRENTLY LAMP IS: Off");
     sleep(1); 
-    while (true){
+    while (true){        
         printf("Input cardnumber to test access: ");
         if(scanf(" %d", &cardNumTest)){
             empty_stdin();
-            if(hasAccess(cardList, cardNumTest)){
-                puts("CURRENTLY LAMP IS: Green"); 
-                sleep(3);
-                puts("CURRENTLY LAMP IS: Off");
-                return;
-            } else {
-                puts("CURRENTLY LAMP IS: Red"); 
-                sleep(3);
-                puts("CURRENTLY LAMP IS: Off");
-                return;
+            if(isInSystem(cardList, cardNumTest)){
+                if(hasAccess(cardList, cardNumTest)){
+                    puts("CURRENTLY LAMP IS: Green"); 
+                    sleep(3);
+                    puts("CURRENTLY LAMP IS: Off");
+                    return;
+                }else{
+                    puts("CURRENTLY LAMP IS: Red"); 
+                    sleep(3);
+                    puts("CURRENTLY LAMP IS: Off");
+                    return;
+                }
             }
             printf("\nCard number %d is not registerd in the system.\n", cardNumTest); 
             while(true){
-            printf("Do you want to:\n1. Enter a new number\n2. Exit to menu\n");
-            scanf(" %d",&userChoice);     
+                printf("Do you want to:\n1. Enter a new number\n2. Exit to menu\n");
+                scanf(" %d",&userChoice);  
                 if(userChoice != 1 && userChoice != 2){
                     printf("\nInvalid input\n");
                     empty_stdin();
@@ -274,7 +297,7 @@ void testAccess(CardsList *cardList){
                     else if(userChoice == 2){  
                         return; 
                     }
-                }
+                    }
             }
         }else{
             printf("Input must be a number.\n");
