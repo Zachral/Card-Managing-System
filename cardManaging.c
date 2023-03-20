@@ -37,7 +37,7 @@ int readCardList(CardsList *cardList){
     }  
     cardList->numOfCards = counter; 
     fclose(file); 
-return counter;
+return 0;
 }
 
 //prints card details to console
@@ -50,12 +50,22 @@ void printCardDetails(CardsList * cardList, int i){
 //Goes through all registerd cards in system.
 int cardsInSystem(CardsList *cardList){ 
     printf("\nCards registerd in system:");
-    for(int i = 0; i < readCardList(cardList) - 1; i++){
+    readCardList(cardList);
+    for(int i = 0; i < cardList->numOfCards -1; i++){
         printCardDetails(cardList, i); 
     }
    
 return 0;
 }
+
+bool cardExists(CardsList *cardList, int cardNum){
+    readCardList(cardList); 
+    for(int i = 0;i < cardList->numOfCards ; i++){
+        if(cardNum == cardList->cards[i].cardNumber)
+            return true; 
+    }
+    return false; 
+}   
 
 //Appends a new card to binary file
 void addCardToFile(CardsList *cardList, int tempCardNum, bool tempAccess){
@@ -99,7 +109,8 @@ int inputCardDetails(CardsList *cardList){
         printf("\nInput card details:\nCard number: ");
         if(scanf(" %d", &tempCardNum)){
             while(true){
-                for(int i = 0;i < readCardList(cardList) - 1; i++){
+                readCardList(cardList); 
+                for(int i = 0;i < cardList->numOfCards ; i++){
                     if(tempCardNum == cardList->cards[i].cardNumber){
                         printf("A card with card number %d is already registerd in the system.\nEnter a different number.\n", tempCardNum);
                         i = 0; 
@@ -168,7 +179,8 @@ int manageAccess(CardsList *cardList){
     while(true){
         printf("Input cardnumber: ");
         if(scanf(" %d", &cardNum)){
-            for(int i = 0;i < readCardList(cardList); i++){
+            readCardList(cardList);
+            for(int i = 0;i < cardList->numOfCards; i++){
                 if(cardNum == cardList->cards[i].cardNumber){
                     printCardDetails(cardList, i); 
                     empty_stdin(); 
@@ -191,8 +203,8 @@ int manageAccess(CardsList *cardList){
                         empty_stdin(); 
                         return 0;
                     }else{
+                        printf("Press any key to continue"); 
                         empty_stdin(); 
-                        fclose(file); 
                         return 0;  
                     }
                 }
@@ -237,7 +249,8 @@ void testAccess(CardsList *cardList){
         printf("Input cardnumber to test access: ");
         if(scanf(" %d", &cardNumTest)){
             empty_stdin();
-            for(int i = 0; i < readCardList(cardList) - 1; i++){
+            readCardList(cardList);
+            for(int i = 0; i <cardList->numOfCards; i++){
                 if(cardList->cards[i].cardNumber == cardNumTest){
                     if(cardList->cards[i].access){
                         puts("CURRENTLY LAMP IS: Green"); 
