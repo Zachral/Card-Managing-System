@@ -13,11 +13,15 @@ int showMenu(){
             "4. Exit\n"
             "9. FAKE TEST SCAN CARD");
 
-        GetInputInt("", &userSelection);
-
-        if(userSelection != 1 && userSelection != 2 && userSelection != 3 && userSelection != 4 && userSelection != 5 && userSelection != 9){
+        if(scanf(" %d",  &userSelection)){
+            if(userSelection != 1 && userSelection != 2 && userSelection != 3 && userSelection != 4 && userSelection != 5 && userSelection != 9){
             puts("Invalid choice. Try again\n");
-        }else 
-            return userSelection;  
+            }else {
+                return userSelection;  
+            }
+        }else{
+            puts("Invalid input");
+            empty_stdin(); 
         }
+    }
 }
