@@ -11,6 +11,12 @@
 #include "menu.h"
 #include "empty_stdin.h"
 
+int comparator(const void* p1, const void* p2) {
+    Card *card1 = (Card *)p1;
+    Card *card2 = (Card *)p2; 
+    return card1->cardNumber - card2->cardNumber; 
+}
+
 //Reads the cards from binary file to struct.
 int readCardList(CardsList *cardList){
     int ch; 
@@ -34,7 +40,8 @@ int readCardList(CardsList *cardList){
             cardList -> cards = (Card *)realloc(cardList -> cards, (counter + 1)  * sizeof(Card)); 
         fread(&cardList->cards[counter], sizeof(cardList->cards[0]), 1, file);
         counter++;
-    }  
+    } 
+    qsort(cardList->cards, counter-1, sizeof(Card), comparator);  
     cardList->numOfCards = counter; 
     fclose(file); 
 return 0;
@@ -55,7 +62,6 @@ int cardsInSystem(CardsList *cardList){
     for(int i = 0; i < cardList->numOfCards -1; i++){
         printCardDetails(cardList, i); 
     }
-   
 return 0;
 }
 
@@ -104,7 +110,7 @@ void changeAccessStatus(CardsList *cardList, int position){
         printf("\nUpdated details:");
         printCardDetails(cardList, position); 
         file = fopen("listOfRegisterdCards.dat", "wb"); 
-        fwrite(cardList->cards, sizeof(Card), cardList->numOfCards -1, file); 
+        fwrite(cardList->cards, sizeof(Card), cardList->numOfCards-1, file); 
         fclose(file);
         printf("Press any key to continue"); 
         empty_stdin(); 
